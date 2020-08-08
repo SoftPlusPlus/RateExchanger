@@ -25,7 +25,7 @@ public class FetchRatesData {
 
     private static final String LOG_TAG = FetchRatesData.class.getSimpleName();
 
-    private static final String JSON_KEY_DATE = "date";
+    private static final String JSON_KEY_DATE = "timestamp";
     private static final String JSON_KEY_RATE = "rates";
 
     public FetchRatesData() {
@@ -41,7 +41,7 @@ public class FetchRatesData {
         try {
             JSONObject baseJsonResponse = new JSONObject(json);
             latestDate = baseJsonResponse.getString(JSON_KEY_DATE);
-            JSONObject ratesObject = baseJsonResponse.getJSONObject(JSON_KEY_DATE);
+            JSONObject ratesObject = baseJsonResponse.getJSONObject(JSON_KEY_RATE);
 
             for (Iterator<String> iterator = ratesObject.keys(); iterator.hasNext(); ) {
                 String currencySymbol = iterator.next();
@@ -65,7 +65,7 @@ public class FetchRatesData {
 
         try {
             urlConnection = (HttpURLConnection)url.openConnection();
-            urlConnection.setRequestMethod("Get");
+            urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(10000); // milliseconds
             urlConnection.setConnectTimeout(15000); // milliseconds
             urlConnection.connect();
@@ -121,8 +121,6 @@ public class FetchRatesData {
     }
 
     public static List<Rate> fetchCurrencyRatesData(String requestUrl) {
-        Log.i(LOG_TAG, "fetchCurrencyRatesData()");
-
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
