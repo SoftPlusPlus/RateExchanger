@@ -4,7 +4,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.softplus.rateexchanger.background.CurrencyAsyncTaskLoader;
 import com.softplus.rateexchanger.models.Rate;
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uribuilder = baseUri.buildUpon();
         uribuilder.appendQueryParameter("app_id", APP_KEY);
-        Log.i(LOG_TAG, uribuilder.build().toString());
         return uribuilder.build().toString();
     }
 
@@ -80,17 +78,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<List<Rate>> onCreateLoader(int id, @Nullable Bundle args) {
-        Log.i(LOG_TAG, "onCreateLoader()");
         return new CurrencyAsyncTaskLoader(this, buildURL());
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Rate>> loader, List<Rate> rates) {
-        Log.i(LOG_TAG, "onLoadFinished");
-
-        String[] from = {"country_image", "country_title"};
-        int[] to = {R.id.tv_currency, R.id.tv_rate};
-
         if (rates != null && !rates.isEmpty()) {
             rateList = rates;
             String latestUpdate = rateList.get(0).getLatestDate();
@@ -103,6 +95,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
-        Log.i(LOG_TAG, "onLoaerReset");
     }
 }
