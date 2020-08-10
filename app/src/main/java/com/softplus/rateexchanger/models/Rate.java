@@ -11,6 +11,12 @@ public class Rate implements Parcelable {
     private String latestDate;
     private String rate;
 
+    public Rate(int imageId, String currency, String country) {
+        this.imageId = imageId;
+        this.currency = currency;
+        this.country = country;
+    }
+
     public Rate(int imageId, String currency, String country, String latestDate, String rate) {
         this.imageId = imageId;
         this.currency = currency;
@@ -28,7 +34,7 @@ public class Rate implements Parcelable {
     }
 
     public int getImageId() {
-        return this.getImageId();
+        return imageId;
     }
 
     public void setImageId(int CountryResourceId) {

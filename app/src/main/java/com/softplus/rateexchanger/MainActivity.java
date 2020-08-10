@@ -6,8 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.softplus.rateexchanger.background.CurrencyAsyncTaskLoader;
 import com.softplus.rateexchanger.models.Rate;
+import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -15,24 +18,46 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.softplus.rateexchanger.utilities.Constants.APP_KEY;
 import static com.softplus.rateexchanger.utilities.Constants.BASE_URL;
 import static com.softplus.rateexchanger.utilities.Constants.LOADER_ID;
+import static com.softplus.rateexchanger.utilities.Constants.setAdditionalCountryContent;
 
-public class MainActivity
-        extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<List<Rate>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Rate>> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
+
+    private List<Rate> rateList;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RateRecyclerAdapter rateRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        rateList = new ArrayList<>();
+
         getLatestRates();
-        //buildURL();
+
+        initRecyclerView();
+
+    }
+
+    private void initRecyclerView() {
+        recyclerView = findViewById(R.id.recycleView);
+
+        recyclerView.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
+        recyclerView.setAdapter(rateRecyclerAdapter);
     }
 
     private String buildURL() {
@@ -56,12 +81,24 @@ public class MainActivity
     @Override
     public Loader<List<Rate>> onCreateLoader(int id, @Nullable Bundle args) {
         Log.i(LOG_TAG, "onCreateLoader()");
-        return null;
+        return new CurrencyAsyncTaskLoader(this, buildURL());
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<List<Rate>> loader, List<Rate> data) {
+    public void onLoadFinished(@NonNull Loader<List<Rate>> loader, List<Rate> rates) {
         Log.i(LOG_TAG, "onLoadFinished");
+
+        String[] from = {"country_image", "country_title"};
+        int[] to = {R.id.tv_currency, R.id.tv_rate};
+
+        if (rates != null && !rates.isEmpty()) {
+            rateList = rates;
+            String latestUpdate = rateList.get(0).getLatestDate();
+            //tv_latest_update.setText(String.format("%s%s", getString(R.string.up_to_date), latestUpdate));
+            rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
+            recyclerView.setAdapter(rateRecyclerAdapter);
+            setAdditionalCountryContent(rateList);
+        }
     }
 
     @Override

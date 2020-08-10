@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.softplus.rateexchanger.models.Rate;
+import com.softplus.rateexchanger.networking.FetchRatesData;
 
 import java.util.List;
 
@@ -34,6 +35,6 @@ public class CurrencyAsyncTaskLoader extends AsyncTaskLoader<List<Rate>> {
         if (url == null)
             return null;
 
-        return FetchRatesData.fetchCurrencyRatesData(url)
+        return FetchRatesData.fetchCurrencyRatesData(url);
     }
 }
