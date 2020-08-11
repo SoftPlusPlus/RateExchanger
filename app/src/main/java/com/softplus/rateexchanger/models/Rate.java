@@ -36,17 +36,22 @@ public class Rate implements Parcelable {
         this.currency = (Currency_map.containsKey(_symbol))? Constants.Currency_map.get(_symbol): "";
         this.country = (Country_map.containsKey(_symbol))? Constants.Country_map.get(_symbol): "";
         this.latestDate = _latestDate;
-        this.rate = _rate;
+        double tmp = Double.parseDouble(_rate);
+        tmp = Math.round(tmp * 100) / 100.0;
+        this.rate = Double.toString(tmp);
     }
 
     protected Rate(Parcel in) {
         this.symbol = in.readString();
         this.latestDate = in.readString();
-        this.rate = in.readString();
+
+        double tmp = Double.parseDouble(in.readString());
+        tmp = Math.round(tmp * 100) / 100.0;
+        this.rate = Double.toString(tmp);
+
         this.imageId = ImageID_map.get(this.symbol);
         this.currency = Constants.Currency_map.get(this.symbol);
         this.country = Constants.Country_map.get(this.symbol);
-
     }
 
     public int getImageId() {
