@@ -3,7 +3,6 @@ package com.softplus.rateexchanger.networking;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.softplus.rateexchanger.R;
 import com.softplus.rateexchanger.models.Rate;
 
 import org.json.JSONException;
@@ -47,7 +46,10 @@ public class FetchRatesData {
                 String currencySymbol = iterator.next();
                 String rate = String.valueOf(ratesObject.get(currencySymbol));
 
-                Rate currencyRate = new Rate(R.mipmap.ic_launcher_round, currencySymbol, "Country Name", latestDate, rate);
+                Log.i(LOG_TAG, "==> " + currencySymbol + " " + rate);
+
+                //Rate currencyRate = new Rate(R.mipmap.ic_launcher_round, currencySymbol, currencySymbol, "Country Name", latestDate, rate);
+                Rate currencyRate = new Rate(currencySymbol, latestDate, rate);
                 rateList.add(currencyRate);
             }
 

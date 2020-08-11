@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.softplus.rateexchanger.background.CurrencyAsyncTaskLoader;
 import com.softplus.rateexchanger.models.Rate;
@@ -23,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.softplus.rateexchanger.utilities.Constants.APP_KEY;
 import static com.softplus.rateexchanger.utilities.Constants.BASE_URL;
 import static com.softplus.rateexchanger.utilities.Constants.LOADER_ID;
-import static com.softplus.rateexchanger.utilities.Constants.setAdditionalCountryContent;
+import static com.softplus.rateexchanger.utilities.Constants.initVariables;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Rate>> {
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initVariables();
 
         rateList = new ArrayList<>();
 
@@ -86,10 +89,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (rates != null && !rates.isEmpty()) {
             rateList = rates;
             String latestUpdate = rateList.get(0).getLatestDate();
-            //tv_latest_update.setText(String.format("%s%s", getString(R.string.up_to_date), latestUpdate));
             rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
             recyclerView.setAdapter(rateRecyclerAdapter);
-            setAdditionalCountryContent(rateList);
+            //setAdditionalCountryContent(rateList);
+
+            for (int i = 0; i < rates.size(); i++) {
+                Log.i(LOG_TAG, rates.get(i).getCountry() + " " + rates.get(i).getCurrency() + " " + rates.get(i).getRate());
+            }
         }
     }
 
