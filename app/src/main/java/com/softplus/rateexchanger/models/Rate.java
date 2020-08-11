@@ -57,6 +57,10 @@ public class Rate implements Parcelable {
         this.imageId = CountryResourceId;
     }
 
+    public String getSymbol() {
+        return this.symbol;
+    }
+
     public String getCurrency() {
         return this.currency;
     }

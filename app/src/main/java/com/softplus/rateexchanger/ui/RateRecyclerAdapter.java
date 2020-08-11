@@ -39,6 +39,7 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
         Rate rates = rateListFiltered.get(position);
 
         holder.iv_symbol.setImageResource(rates.getImageId());
+        holder.tv_symbol.setText(rates.getSymbol());
         holder.tv_currency.setText(rates.getCountry());
         holder.tv_rate.setText(rates.getRate());
     }
@@ -55,12 +56,13 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
 
     public class RatesHolder extends RecyclerView.ViewHolder {
         private ImageView iv_symbol;
-        private TextView tv_currency, tv_rate;
+        private TextView tv_currency, tv_rate, tv_symbol;
 
         public RatesHolder(@NonNull View itemView) {
             super(itemView);
 
             iv_symbol = itemView.findViewById(R.id.iv_symbol);
+            tv_symbol = itemView.findViewById(R.id.tv_symbol);
             tv_currency = itemView.findViewById(R.id.tv_currency);
             tv_rate = itemView.findViewById(R.id.tv_rate);
         }
