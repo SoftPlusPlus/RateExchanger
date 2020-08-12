@@ -18,12 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapter.RatesHolder> {
     private Context context;
     private List<Rate> rateList;
-    private List<Rate> rateListFiltered;
 
     public RateRecyclerAdapter(Context context, List<Rate> rateList) {
         this.context = context;
         this.rateList = rateList;
-        this.rateListFiltered = rateList;
     }
 
     @NonNull
@@ -36,7 +34,7 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RatesHolder holder, int position) {
-        Rate rates = rateListFiltered.get(position);
+        Rate rates = rateList.get(position);
 
         holder.iv_symbol.setImageResource(rates.getImageId());
         holder.tv_symbol.setText(rates.getSymbol());
@@ -46,7 +44,7 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return rateListFiltered.size();
+        return rateList.size();
     }
 
     public interface CurrencyAdapterListener {
