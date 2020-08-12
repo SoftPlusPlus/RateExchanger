@@ -5,8 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import com.softplus.rateexchanger.models.Rate;
 import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
+        rateRecyclerAdapter = new RateRecyclerAdapter(this, userCustomerRateList);
         recyclerView.setAdapter(rateRecyclerAdapter);
     }
 
@@ -82,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         // update UI
-        rateRecyclerAdapter = new RateRecyclerAdapter(this, userCustomerRateList);
-        recyclerView.setAdapter(rateRecyclerAdapter);
+        rateRecyclerAdapter.notifyDataSetChanged();
     }
 
     private String readCustomerItems() {
@@ -138,7 +135,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
     }
 
-    public void onAddCountry(View view) {
-        Log.i(LOG_TAG, "Add");
-    }
+//    public void onAddCountry(View view) {
+//        Intent intent = new Intent(MainActivity.this, CountryListActivity.class);
+//        //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
+//        startActivity(intent);
+//    }
 }
