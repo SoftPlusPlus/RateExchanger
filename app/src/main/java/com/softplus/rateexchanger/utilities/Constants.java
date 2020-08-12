@@ -14,13 +14,15 @@ public class Constants {
     public static final String BASE_URL = "https://openexchangerates.org/api/latest.json";
     public static final String APP_KEY = BuildConfig.API_ACCESS_KEY;
 
+    public static final String DEFAULT_VIEW_ITEMS = "TWD,JPY,CNY";
+
     public static final int LOADER_ID = 1;
 
     public static Map<String, Integer> ImageID_map;
     public static Map<String, String> Country_map;
     public static Map<String, String> Currency_map;
 
-    public static void initVariables() {
+    public static void initConstantsVariables() {
         String symbol;
 
         ImageID_map = new HashMap<String, Integer>();

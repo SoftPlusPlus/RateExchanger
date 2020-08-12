@@ -19,17 +19,6 @@ public class Rate implements Parcelable {
     private String latestDate;
     private String rate;
 
-    /*
-    public Rate(int _imageId, String _symbol, String _currency, String _country, String _latestDate, String _rate) {
-        this.imageId = _imageId;
-        this.symbol = _symbol;
-        this.currency = _currency;
-        this.country = _country;
-        this.latestDate = _latestDate;
-        this.rate = _rate;
-    }
-    */
-
     public Rate(String _symbol, String _latestDate, String _rate) {
         this.symbol = _symbol;
         this.imageId = (ImageID_map.containsKey(_symbol))? ImageID_map.get(_symbol): R.drawable.image_empty;

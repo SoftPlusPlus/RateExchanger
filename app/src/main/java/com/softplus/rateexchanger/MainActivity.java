@@ -1,12 +1,11 @@
 package com.softplus.rateexchanger;
 
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.softplus.rateexchanger.background.CurrencyAsyncTaskLoader;
 import com.softplus.rateexchanger.models.Rate;
 import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
 
@@ -23,14 +22,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.softplus.rateexchanger.utilities.Constants.APP_KEY;
 import static com.softplus.rateexchanger.utilities.Constants.BASE_URL;
+import static com.softplus.rateexchanger.utilities.Constants.DEFAULT_VIEW_ITEMS;
 import static com.softplus.rateexchanger.utilities.Constants.LOADER_ID;
-import static com.softplus.rateexchanger.utilities.Constants.initVariables;
+import static com.softplus.rateexchanger.utilities.Constants.initConstantsVariables;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Rate>> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private List<Rate> rateList;
+    private List<Rate> userCustomerRateList;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RateRecyclerAdapter rateRecyclerAdapter;
@@ -40,14 +41,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initConstantsVariables();
         initVariables();
 
-        rateList = new ArrayList<>();
-
-        getLatestRates();
+        //getLatestRates();
 
         initRecyclerView();
 
+        setRecyclerViewItem();
+    }
+
+    private void initVariables() {
+        rateList = new ArrayList<>();
+        userCustomerRateList = new ArrayList<>();
     }
 
     private void initRecyclerView() {
@@ -60,6 +66,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
         recyclerView.setAdapter(rateRecyclerAdapter);
+    }
+
+    private void setRecyclerViewItem() {
+        // Get user preferences
+        String customerItems = readCustomerItems();
+
+        // save settings to list
+        String list[] = customerItems.split(",");
+        for (int i = 0; i < list.length; i++) {
+            Rate r = new Rate(list[i], "", "");
+            userCustomerRateList.add(r);
+        }
+
+        // update UI
+        rateRecyclerAdapter = new RateRecyclerAdapter(this, userCustomerRateList);
+        recyclerView.setAdapter(rateRecyclerAdapter);
+    }
+
+    private String readCustomerItems() {
+        // Read preferences settings
+        SharedPreferences preferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
+        String customerItems = preferences.getString("customerItems", "");
+
+        if (customerItems.isEmpty()) { // no settings, save default to file
+            preferences.edit().putString("customerItems", DEFAULT_VIEW_ITEMS).commit();
+            customerItems = DEFAULT_VIEW_ITEMS;
+        }
+
+        return customerItems;
     }
 
     private String buildURL() {
@@ -81,22 +116,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<List<Rate>> onCreateLoader(int id, @Nullable Bundle args) {
-        return new CurrencyAsyncTaskLoader(this, buildURL());
+        //return new CurrencyAsyncTaskLoader(this, buildURL());
+        return null;
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Rate>> loader, List<Rate> rates) {
+        /*
         if (rates != null && !rates.isEmpty()) {
             rateList = rates;
             String latestUpdate = rateList.get(0).getLatestDate();
             rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
             recyclerView.setAdapter(rateRecyclerAdapter);
-            //setAdditionalCountryContent(rateList);
-
-            for (int i = 0; i < rates.size(); i++) {
-                Log.i(LOG_TAG, rates.get(i).getCountry() + " " + rates.get(i).getCurrency() + " " + rates.get(i).getRate());
-            }
         }
+        */
     }
 
     @Override
