@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.softplus.rateexchanger.models.Rate;
 import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
@@ -134,5 +136,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
+    }
+
+    public void onAddCountry(View view) {
+        Log.i(LOG_TAG, "Add");
     }
 }
