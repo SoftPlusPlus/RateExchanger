@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.softplus.rateexchanger.models.Rate;
@@ -140,6 +141,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onAddCountry(View view) {
         Intent intent = new Intent(MainActivity.this, CountryListActivity.class);
         //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, CountryListActivity.RequestCode.GET_SELECTED_COUNTRY.ordinal());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (requestCode == CountryListActivity.RequestCode.GET_SELECTED_COUNTRY.ordinal()) {
+            String addCountry = data.getStringExtra("AddCountry");
+
+            Log.i(LOG_TAG, addCountry);
+
+            boolean find = false;
+
+            // check if addCountry exists?
+            for (Rate r: userCustomerRateList) {
+                Log.i(LOG_TAG, r.getSymbol());
+                if (r.getSymbol().equals(addCountry)) {
+                    find = true;
+                    break;
+                }
+            }
+
+            if (!find) {
+                Rate r = new Rate(addCountry, "", "");
+                userCustomerRateList.add(r);
+                rateRecyclerAdapter.notifyDataSetChanged();
+            }
+
+            // TODO: save setting to SharedPreference
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
