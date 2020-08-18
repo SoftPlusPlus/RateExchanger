@@ -1,10 +1,12 @@
 package com.softplus.rateexchanger;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
 import com.softplus.rateexchanger.models.Rate;
 import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
@@ -135,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
     }
 
-//    public void onAddCountry(View view) {
-//        Intent intent = new Intent(MainActivity.this, CountryListActivity.class);
-//        //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
-//        startActivity(intent);
-//    }
+    public void onAddCountry(View view) {
+        Intent intent = new Intent(MainActivity.this, AllCountryList.class);
+        //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
+        startActivity(intent);
+    }
 }

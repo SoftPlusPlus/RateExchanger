@@ -5,29 +5,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".AllCountryList"
     android:orientation="vertical"
     >
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_all_country"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:title="@string/app_name" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        app:menu="@menu/toolbar_all_country_menu"
+        app:title="@string/app_name"
         />
 
-    <TextView
-        android:id="@+id/tv_addCountry"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_all_country_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/add"
-        android:onClick="onAddCountry"
+        android:layout_height="match_parent"
         />
 
 </LinearLayout>
