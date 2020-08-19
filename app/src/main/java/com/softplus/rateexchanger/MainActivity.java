@@ -1,12 +1,10 @@
 package com.softplus.rateexchanger;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.softplus.rateexchanger.models.Rate;
@@ -25,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.softplus.rateexchanger.utilities.Constants.APP_KEY;
 import static com.softplus.rateexchanger.utilities.Constants.BASE_URL;
-import static com.softplus.rateexchanger.utilities.Constants.DEFAULT_VIEW_ITEMS;
 import static com.softplus.rateexchanger.utilities.Constants.LOADER_ID;
 import static com.softplus.rateexchanger.utilities.Constants.initConstantsVariables;
 
@@ -34,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private List<Rate> rateList;
-    private List<Rate> userCustomerRateList;
+    //private List<Rate> userCustomerRateList;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RateRecyclerAdapter rateRecyclerAdapter;
@@ -50,13 +47,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //getLatestRates();
 
         initRecyclerView();
-
-        setRecyclerViewItem();
     }
 
     private void initVariables() {
         rateList = new ArrayList<>();
-        userCustomerRateList = new ArrayList<>();
     }
 
     private void initRecyclerView() {
@@ -67,36 +61,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        rateRecyclerAdapter = new RateRecyclerAdapter(this, userCustomerRateList);
+        rateRecyclerAdapter = new RateRecyclerAdapter(this);
         recyclerView.setAdapter(rateRecyclerAdapter);
-    }
-
-    private void setRecyclerViewItem() {
-        // Get user preferences
-        String customerItems = readCustomerItems();
-
-        // save settings to list
-        String list[] = customerItems.split(",");
-        for (int i = 0; i < list.length; i++) {
-            Rate r = new Rate(list[i], "", "");
-            userCustomerRateList.add(r);
-        }
-
-        // update UI
-        rateRecyclerAdapter.notifyDataSetChanged();
-    }
-
-    private String readCustomerItems() {
-        // Read preferences settings
-        SharedPreferences preferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
-        String customerItems = preferences.getString("customerItems", "");
-
-        if (customerItems.isEmpty()) { // no settings, save default to file
-            preferences.edit().putString("customerItems", DEFAULT_VIEW_ITEMS).commit();
-            customerItems = DEFAULT_VIEW_ITEMS;
-        }
-
-        return customerItems;
     }
 
     private String buildURL() {
@@ -147,22 +113,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 1) {
-            Log.i(LOG_TAG, data.getStringExtra("AddCountry"));
             String addCountry = data.getStringExtra("AddCountry");
-            Rate r = new Rate(addCountry, "", "");
-
-            boolean find = false;
-            for (int i = 0; i < userCustomerRateList.size(); i++) {
-                if (userCustomerRateList.get(i).getSymbol().equals(addCountry)) {
-                    find = true;
-                    break;
-                }
-            }
-
-            if (!find) {
-                userCustomerRateList.add(r);
-                rateRecyclerAdapter.notifyDataSetChanged();
-            }
+            rateRecyclerAdapter.addCountry(addCountry);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
