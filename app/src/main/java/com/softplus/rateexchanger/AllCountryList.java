@@ -80,7 +80,7 @@ public class AllCountryList extends AppCompatActivity {
             allCountry.add(r);
         }
 
-        allCountryRecyclerAdapter = new AllCountryRecyclerAdapter(allCountry);
+        allCountryRecyclerAdapter = new AllCountryRecyclerAdapter(this, allCountry);
         recyclerView.setAdapter(allCountryRecyclerAdapter);
     }
 }

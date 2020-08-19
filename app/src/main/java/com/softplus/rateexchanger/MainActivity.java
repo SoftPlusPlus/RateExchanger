@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.softplus.rateexchanger.models.Rate;
@@ -137,9 +138,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
     }
 
-    public void onAddCountry(View view) {
+    public void onAddCountryClick(View view) {
         Intent intent = new Intent(MainActivity.this, AllCountryList.class);
         //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 1) {
+            Log.i(LOG_TAG, data.getStringExtra("AddCountry"));
+            String addCountry = data.getStringExtra("AddCountry");
+            Rate r = new Rate(addCountry, "", "");
+
+            boolean find = false;
+            for (int i = 0; i < userCustomerRateList.size(); i++) {
+                if (userCustomerRateList.get(i).getSymbol().equals(addCountry)) {
+                    find = true;
+                    break;
+                }
+            }
+
+            if (!find) {
+                userCustomerRateList.add(r);
+                rateRecyclerAdapter.notifyDataSetChanged();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

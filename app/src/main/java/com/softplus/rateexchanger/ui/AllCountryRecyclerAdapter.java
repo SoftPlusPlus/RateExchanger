@@ -1,5 +1,8 @@
 package com.softplus.rateexchanger.ui;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +11,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.softplus.rateexchanger.AllCountryList;
 import com.softplus.rateexchanger.R;
 import com.softplus.rateexchanger.models.Rate;
 
@@ -19,10 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRecyclerAdapter.RatesHolder> implements Filterable {
 
+    Context context;
     List<Rate> allCountryList;
     List<Rate> filteredList;
 
-    public AllCountryRecyclerAdapter(List<Rate> _list) {
+    public AllCountryRecyclerAdapter(Context _context, List<Rate> _list) {
+        context = _context;
         allCountryList = new ArrayList<>(_list);
         filteredList = new ArrayList<>(_list);
     }
@@ -104,8 +110,8 @@ public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRe
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //((AllCountryList)context).setResult(Activity.RESULT_OK, new Intent().putExtra("AddCountry", tv_symbol.getText()));
-                    //((CountryListActivity)context).finish(); // close country list activity
+                    ((AllCountryList)context).setResult(Activity.RESULT_OK, new Intent().putExtra("AddCountry", tv_symbol.getText()));
+                    ((AllCountryList)context).finish(); // close country list activity
                 }
             });
 
