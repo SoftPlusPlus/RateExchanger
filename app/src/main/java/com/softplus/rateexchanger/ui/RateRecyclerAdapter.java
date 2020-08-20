@@ -105,6 +105,8 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
 
         if (selectedRow == position) {
             holder.ll_view_group.setBackgroundColor(Color.parseColor(ITEM_FOCUS_BACKGROUND_COLOR));
+            // keep cursor in the end of EditText
+            holder.et_value.setSelection(holder.et_value.getText().length());
         }
         else {
             holder.ll_view_group.setBackgroundColor(Color.parseColor(ITEM_UNFOCUS_BACKGROUND_COLOR));
@@ -188,11 +190,6 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
                         rateList.get(currentPosition).setRate(inputString);
                         updateValues(currentPosition);
                         notifyDataSetChanged();
-
-                        et_value.setSelection(et_value.getText().length());
-                        Log.i(LOG_TAG, "Length: " + Integer.toString( et_value.getText().length()));
-                        Log.i(LOG_TAG, "cursor start: " + Integer.toString( et_value.getSelectionStart()));
-                        Log.i(LOG_TAG, "cursor end: " + Integer.toString( et_value.getSelectionEnd()));
                     }
                 }
             });
