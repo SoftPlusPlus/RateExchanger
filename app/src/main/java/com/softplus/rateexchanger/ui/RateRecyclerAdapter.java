@@ -24,10 +24,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.softplus.rateexchanger.utilities.Constants.DEFAULT_VIEW_ITEMS;
+import static com.softplus.rateexchanger.utilities.Constants.ITEM_FOCUS_BACKGROUND_COLOR;
+import static com.softplus.rateexchanger.utilities.Constants.ITEM_UNFOCUS_BACKGROUND_COLOR;
 
 public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapter.RatesHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
+    private int selectedRow = 0;
     private Context context;
     private List<Rate> rateList;
 
@@ -99,6 +102,13 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
         holder.tv_symbol.setText(rates.getSymbol());
         holder.tv_currency.setText(rates.getCountry());
         holder.et_value.setText(rates.getRate());
+
+        if (selectedRow == position) {
+            holder.ll_view_group.setBackgroundColor(Color.parseColor(ITEM_FOCUS_BACKGROUND_COLOR));
+        }
+        else {
+            holder.ll_view_group.setBackgroundColor(Color.parseColor(ITEM_UNFOCUS_BACKGROUND_COLOR));
+        }
     }
 
     @Override
@@ -144,7 +154,8 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
                 @Override
                 public void onClick(View view) {
                     et_value.requestFocus();
-                    ll_view_group.setBackgroundColor(Color.argb(0, 255, 0, 0));
+                    selectedRow = getLayoutPosition();
+                    notifyDataSetChanged();
                 }
             });
 

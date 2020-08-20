@@ -1,13 +1,9 @@
 package com.softplus.rateexchanger.utilities;
 
-import android.util.Log;
-
 import com.softplus.rateexchanger.BuildConfig;
 import com.softplus.rateexchanger.R;
-import com.softplus.rateexchanger.models.Rate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Constants {
@@ -21,6 +17,9 @@ public class Constants {
     public static Map<String, Integer> ImageID_map;
     public static Map<String, String> Country_map;
     public static Map<String, String> Currency_map;
+
+    public static final String ITEM_FOCUS_BACKGROUND_COLOR = "#FF0000";
+    public static final String ITEM_UNFOCUS_BACKGROUND_COLOR = "#FFFFFF";
 
     public static void initConstantsVariables() {
         String symbol;
