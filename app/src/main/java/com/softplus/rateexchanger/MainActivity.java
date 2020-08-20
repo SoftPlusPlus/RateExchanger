@@ -5,11 +5,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.softplus.rateexchanger.background.CurrencyAsyncTaskLoader;
 import com.softplus.rateexchanger.models.Rate;
 import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +35,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private List<Rate> rateList;
-    //private List<Rate> userCustomerRateList;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RateRecyclerAdapter rateRecyclerAdapter;
+
+    // Activity request code
+    private static final int REQUEST_ADD_COUNTRY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +50,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         initConstantsVariables();
         initVariables();
 
-        //getLatestRates();
+        getLatestRates();
 
         initRecyclerView();
     }
 
+    /* ==================================== */
+    /* ============= init UI ============== */
+    /* ==================================== */
     private void initVariables() {
         rateList = new ArrayList<>();
     }
@@ -65,27 +74,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView.setAdapter(rateRecyclerAdapter);
     }
 
-    private String buildURL() {
-        Uri baseUri = Uri.parse(BASE_URL);
-        Uri.Builder uribuilder = baseUri.buildUpon();
-        uribuilder.appendQueryParameter("app_id", APP_KEY);
-        return uribuilder.build().toString();
-    }
-
-    private void getLatestRates() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        if (networkInfo.isConnected()) {
-            LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
-        }
-    }
-
+    /* ==================================== */
+    /* ========== Loader Manager ========== */
+    /* ==================================== */
     @NonNull
     @Override
     public Loader<List<Rate>> onCreateLoader(int id, @Nullable Bundle args) {
-        //return new CurrencyAsyncTaskLoader(this, buildURL());
-        return null;
+        String requestUrl = "";
+        Uri baseUri = Uri.parse(BASE_URL);
+        Uri.Builder uribuilder = baseUri.buildUpon();
+        uribuilder.appendQueryParameter("app_id", APP_KEY);
+        requestUrl = uribuilder.build().toString();
+
+        return new CurrencyAsyncTaskLoader(this, requestUrl);
     }
 
     @Override
@@ -104,18 +105,58 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
     }
 
+    /* ==================================== */
+    /* ============== Control ============= */
+    /* ==================================== */
+    private void getLatestRates() {
+        if (BuildConfig.DEBUG) {
+            // read test data from file
+            String jsonString;
+
+            try {
+                InputStream is = getAssets().open("test_data.json");
+
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+
+                jsonString = new String(buffer, "UTF-8");
+                Log.i(LOG_TAG, jsonString);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        else {
+            ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+            if (networkInfo.isConnected()) {
+                LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
+            }
+        }
+    }
+
     public void onAddCountryClick(View view) {
         Intent intent = new Intent(MainActivity.this, AllCountryList.class);
-        //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
-        startActivityForResult(intent, 1); // TODO: requestCode define
+        startActivityForResult(intent, REQUEST_ADD_COUNTRY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1) {
-            String addCountry = data.getStringExtra("AddCountry");
-            rateRecyclerAdapter.addCountry(addCountry);
+
+        switch (requestCode) {
+            case REQUEST_ADD_COUNTRY:
+                String addCountry = data.getStringExtra("AddCountry");
+                rateRecyclerAdapter.addCountry(addCountry);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + requestCode);
         }
+        
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
