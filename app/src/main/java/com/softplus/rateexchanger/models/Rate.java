@@ -69,6 +69,10 @@ public class Rate implements Parcelable {
         return latestDate;
     }
 
+    public void setRate(String _rate) {
+        this.rate = _rate;
+    }
+
     public String getRate() {
         return rate;
     }

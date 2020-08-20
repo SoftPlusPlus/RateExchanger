@@ -2,10 +2,16 @@ package com.softplus.rateexchanger.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.softplus.rateexchanger.R;
@@ -73,6 +79,7 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
         if (!find) {
             rateList.add(new Rate(country, "", ""));
             notifyDataSetChanged();
+            // TODO: save to SharedPreference
         }
     }
 
@@ -91,7 +98,7 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
         holder.iv_symbol.setImageResource(rates.getImageId());
         holder.tv_symbol.setText(rates.getSymbol());
         holder.tv_currency.setText(rates.getCountry());
-        holder.tv_rate.setText(rates.getRate());
+        holder.et_value.setText(rates.getRate());
     }
 
     @Override
@@ -99,17 +106,47 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
         return rateList.size();
     }
 
-    public class RatesHolder extends RecyclerView.ViewHolder {
-        private ImageView iv_symbol;
-        private TextView tv_currency, tv_rate, tv_symbol;
+    private void updateValues(int currentPosition) {
+        String inputString = rateList.get(currentPosition).getRate();
+        if (inputString.isEmpty())
+            return;
 
-        public RatesHolder(@NonNull View itemView) {
+        // TODO: processing big integer
+        int t = Integer.parseInt(inputString);
+
+        for (int i = 0; i < rateList.size(); i++) {
+            if (i == currentPosition)
+                continue;;
+
+            int value = t * i;
+            rateList.get(i).setRate(Integer.toString(value));
+            Log.i(LOG_TAG, Integer.toString(value));
+        }
+    }
+
+    public class RatesHolder extends RecyclerView.ViewHolder {
+        private LinearLayout ll_view_group;
+        private ImageView iv_symbol;
+        private EditText et_value;
+        private TextView tv_currency, tv_symbol;
+
+        public RatesHolder(@NonNull final View itemView) {
             super(itemView);
 
+            ll_view_group = itemView.findViewById(R.id.rate_item_group);
             iv_symbol = itemView.findViewById(R.id.iv_symbol);
             tv_symbol = itemView.findViewById(R.id.tv_symbol);
             tv_currency = itemView.findViewById(R.id.tv_currency);
-            tv_rate = itemView.findViewById(R.id.tv_rate);
+            et_value = itemView.findViewById(R.id.et_rate);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    et_value.requestFocus();
+                    ll_view_group.setBackgroundColor(Color.argb(0, 255, 0, 0));
+                }
+            });
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -117,6 +154,35 @@ public class RateRecyclerAdapter extends RecyclerView.Adapter<RateRecyclerAdapte
                     rateList.remove(getLayoutPosition());
                     notifyDataSetChanged();
                     return false;
+                }
+            });
+
+            et_value.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                    if (et_value.hasFocus()) {
+                        String inputString = editable.toString();
+                        int currentPosition = getLayoutPosition();
+                        rateList.get(currentPosition).setRate(inputString);
+                        updateValues(currentPosition);
+                        notifyDataSetChanged();
+
+                        et_value.setSelection(et_value.getText().length());
+                        Log.i(LOG_TAG, "Length: " + Integer.toString( et_value.getText().length()));
+                        Log.i(LOG_TAG, "cursor start: " + Integer.toString( et_value.getSelectionStart()));
+                        Log.i(LOG_TAG, "cursor end: " + Integer.toString( et_value.getSelectionEnd()));
+                    }
                 }
             });
         }

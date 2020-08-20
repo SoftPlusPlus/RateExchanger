@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onAddCountryClick(View view) {
         Intent intent = new Intent(MainActivity.this, AllCountryList.class);
         //intent.putExtra("userCustomerRateList", (ArrayList<Rate>)userCustomerRateList.toString());
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, 1); // TODO: requestCode define
     }
 
     @Override

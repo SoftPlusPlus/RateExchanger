@@ -105,7 +105,7 @@ public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRe
             iv_country = itemView.findViewById(R.id.iv_symbol);
             tv_symbol = itemView.findViewById(R.id.tv_symbol);
             tv_currency = itemView.findViewById(R.id.tv_currency);
-            tv_rate = itemView.findViewById(R.id.tv_rate);
+            tv_rate = itemView.findViewById(R.id.et_rate);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
