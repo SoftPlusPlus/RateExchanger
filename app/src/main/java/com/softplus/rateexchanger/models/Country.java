@@ -10,7 +10,7 @@ import static com.softplus.rateexchanger.utilities.Constants.Country_map;
 import static com.softplus.rateexchanger.utilities.Constants.Currency_map;
 import static com.softplus.rateexchanger.utilities.Constants.ImageID_map;
 
-public class Rate implements Parcelable {
+public class Country implements Parcelable {
     private final String LOG_TAG = this.getClass().getName();
     private int imageId;
     private String symbol;
@@ -19,7 +19,7 @@ public class Rate implements Parcelable {
     private String latestDate;
     private String rate;
 
-    public Rate(String _symbol, String _latestDate, String _rate) {
+    public Country(String _symbol, String _latestDate, String _rate) {
         this.symbol = _symbol;
         this.imageId = (ImageID_map.containsKey(_symbol))? ImageID_map.get(_symbol): R.drawable.image_empty;
         this.currency = (Currency_map.containsKey(_symbol))? Constants.Currency_map.get(_symbol): "";
@@ -28,7 +28,7 @@ public class Rate implements Parcelable {
         this.rate = _rate;
     }
 
-    protected Rate(Parcel in) {
+    protected Country(Parcel in) {
         this.symbol = in.readString();
         this.latestDate = in.readString();
         this.rate = in.readString();
@@ -77,15 +77,15 @@ public class Rate implements Parcelable {
         return rate;
     }
 
-    public static final Creator<Rate> CREATOR = new Creator<Rate>() {
+    public static final Creator<Country> CREATOR = new Creator<Country>() {
         @Override
-        public Rate createFromParcel(Parcel in) {
-            return new Rate(in);
+        public Country createFromParcel(Parcel in) {
+            return new Country(in);
         }
 
         @Override
-        public Rate[] newArray(int size) {
-            return new Rate[size];
+        public Country[] newArray(int size) {
+            return new Country[size];
         }
     };
 

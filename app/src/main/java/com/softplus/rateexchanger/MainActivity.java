@@ -5,12 +5,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.softplus.rateexchanger.background.CurrencyAsyncTaskLoader;
-import com.softplus.rateexchanger.models.Rate;
-import com.softplus.rateexchanger.ui.RateRecyclerAdapter;
+import com.softplus.rateexchanger.models.Country;
+import com.softplus.rateexchanger.networking.FetchRatesData;
+import com.softplus.rateexchanger.ui.UserDefineRateRecyclerAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,14 +30,14 @@ import static com.softplus.rateexchanger.utilities.Constants.BASE_URL;
 import static com.softplus.rateexchanger.utilities.Constants.LOADER_ID;
 import static com.softplus.rateexchanger.utilities.Constants.initConstantsVariables;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Rate>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Country>> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private List<Rate> rateList;
-    private RecyclerView recyclerView;
+    private List<Country> countryList;
+    private RecyclerView userDefineRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private RateRecyclerAdapter rateRecyclerAdapter;
+    private UserDefineRateRecyclerAdapter userDefineCountry_RecyclerAdapter;
 
     // Activity request code
     private static final int REQUEST_ADD_COUNTRY = 1;
@@ -59,19 +59,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /* ============= init UI ============== */
     /* ==================================== */
     private void initVariables() {
-        rateList = new ArrayList<>();
+        countryList = new ArrayList<>();
     }
 
     private void initRecyclerView() {
-        recyclerView = findViewById(R.id.recycleView);
+        userDefineRecyclerView = findViewById(R.id.recycleView);
 
-        recyclerView.setHasFixedSize(true);
+        userDefineRecyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        userDefineRecyclerView.setLayoutManager(layoutManager);
 
-        rateRecyclerAdapter = new RateRecyclerAdapter(this);
-        recyclerView.setAdapter(rateRecyclerAdapter);
+        userDefineCountry_RecyclerAdapter = new UserDefineRateRecyclerAdapter(this);
+        userDefineRecyclerView.setAdapter(userDefineCountry_RecyclerAdapter);
     }
 
     /* ==================================== */
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /* ==================================== */
     @NonNull
     @Override
-    public Loader<List<Rate>> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<List<Country>> onCreateLoader(int id, @Nullable Bundle args) {
         String requestUrl = "";
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uribuilder = baseUri.buildUpon();
@@ -90,19 +90,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<List<Rate>> loader, List<Rate> rates) {
-        /*
-        if (rates != null && !rates.isEmpty()) {
-            rateList = rates;
-            String latestUpdate = rateList.get(0).getLatestDate();
-            rateRecyclerAdapter = new RateRecyclerAdapter(this, rateList);
-            recyclerView.setAdapter(rateRecyclerAdapter);
+    public void onLoadFinished(@NonNull Loader<List<Country>> loader, List<Country> countries) {
+        if (countries != null && !countries.isEmpty()) {
+            countryList = countries;
+            //String latestUpdate = rateList.get(0).getLatestDate();
         }
-        */
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<List<Rate>> loader) {
+    public void onLoaderReset(@NonNull Loader<List<Country>> loader) {
     }
 
     /* ==================================== */
@@ -122,13 +118,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 is.close();
 
                 jsonString = new String(buffer, "UTF-8");
-                Log.i(LOG_TAG, jsonString);
-
+                countryList = FetchRatesData.extractCurrencyRatesFromJson(jsonString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
         else {
             ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
@@ -151,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (requestCode) {
             case REQUEST_ADD_COUNTRY:
                 String addCountry = data.getStringExtra("AddCountry");
-                rateRecyclerAdapter.addCountry(addCountry);
+                userDefineCountry_RecyclerAdapter.addCountry(addCountry);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + requestCode);

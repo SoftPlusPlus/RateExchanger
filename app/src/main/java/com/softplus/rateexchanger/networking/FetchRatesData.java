@@ -3,7 +3,7 @@ package com.softplus.rateexchanger.networking;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.softplus.rateexchanger.models.Rate;
+import com.softplus.rateexchanger.models.Country;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,12 +30,12 @@ public class FetchRatesData {
     public FetchRatesData() {
     }
 
-    private static List<Rate> extractCurrencyRatesFromJson(String json) {
+    public static List<Country> extractCurrencyRatesFromJson(String json) {
         if (TextUtils.isEmpty(json))
             return null;
 
         String latestDate;
-        List<Rate> rateList = new ArrayList<>();
+        List<Country> countryList = new ArrayList<>();
 
         try {
             JSONObject baseJsonResponse = new JSONObject(json);
@@ -49,15 +49,15 @@ public class FetchRatesData {
                 Log.i(LOG_TAG, "==> " + currencySymbol + " " + rate);
 
                 //Rate currencyRate = new Rate(R.mipmap.ic_launcher_round, currencySymbol, currencySymbol, "Country Name", latestDate, rate);
-                Rate currencyRate = new Rate(currencySymbol, latestDate, rate);
-                rateList.add(currencyRate);
+                Country currencyRate = new Country(currencySymbol, latestDate, rate);
+                countryList.add(currencyRate);
             }
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "extract currency rates from json error", e);
         }
 
-        return rateList;
+        return countryList;
     }
 
     private static String makeHttpRequest(URL url) throws IOException {
@@ -122,7 +122,7 @@ public class FetchRatesData {
         return url;
     }
 
-    public static List<Rate> fetchCurrencyRatesData(String requestUrl) {
+    public static List<Country> fetchCurrencyRatesData(String requestUrl) {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

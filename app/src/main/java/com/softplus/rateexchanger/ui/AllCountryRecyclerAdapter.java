@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.softplus.rateexchanger.AllCountryList;
 import com.softplus.rateexchanger.R;
-import com.softplus.rateexchanger.models.Rate;
+import com.softplus.rateexchanger.models.Country;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRecyclerAdapter.RatesHolder> implements Filterable {
 
     Context context;
-    List<Rate> allCountryList;
-    List<Rate> filteredList;
+    List<Country> allCountryList;
+    List<Country> filteredList;
 
-    public AllCountryRecyclerAdapter(Context _context, List<Rate> _list) {
+    public AllCountryRecyclerAdapter(Context _context, List<Country> _list) {
         context = _context;
         allCountryList = new ArrayList<>(_list);
         filteredList = new ArrayList<>(_list);
@@ -43,7 +43,7 @@ public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRe
 
     @Override
     public void onBindViewHolder(@NonNull RatesHolder holder, int position) {
-        Rate rates = filteredList.get(position);
+        Country rates = filteredList.get(position);
 
         holder.iv_country.setImageResource(rates.getImageId());
         holder.tv_symbol.setText(rates.getSymbol());
@@ -71,8 +71,8 @@ public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRe
                     filteredList = allCountryList;
                 }
                 else {
-                    List<Rate> tmpList = new ArrayList<>();
-                    for (Rate r: allCountryList) {
+                    List<Country> tmpList = new ArrayList<>();
+                    for (Country r: allCountryList) {
                         if (r.getCountry().toLowerCase().contains(charString.toLowerCase()) ||
                                 r.getSymbol().toLowerCase().contains(charString.toLowerCase())) {
                             tmpList.add(r);
@@ -88,7 +88,7 @@ public class AllCountryRecyclerAdapter extends RecyclerView.Adapter<AllCountryRe
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filteredList = (ArrayList<Rate>)filterResults.values;
+                filteredList = (ArrayList<Country>)filterResults.values;
                 notifyDataSetChanged();
             }
         };

@@ -5,7 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
-import com.softplus.rateexchanger.models.Rate;
+import com.softplus.rateexchanger.models.Country;
 import com.softplus.rateexchanger.ui.AllCountryRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -71,12 +71,12 @@ public class AllCountryList extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // sort country by hash map key
-        List<Rate> allCountry = new ArrayList<>();
+        List<Country> allCountry = new ArrayList<>();
         Set set = Country_map.keySet();
         Object[] arr = set.toArray();
         Arrays.sort(arr);
         for (Object key : arr) {
-            Rate r = new Rate((String)key, "", "");
+            Country r = new Country((String)key, "", "");
             allCountry.add(r);
         }
 
