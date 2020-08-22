@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         layoutManager = new LinearLayoutManager(this);
         userDefineRecyclerView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(userDefineRecyclerView.getContext(), LinearLayoutManager.VERTICAL);
+        userDefineRecyclerView.addItemDecoration(dividerItemDecoration);
 
         userDefineCountry_RecyclerAdapter = new UserDefineRateRecyclerAdapter(this);
         userDefineRecyclerView.setAdapter(userDefineCountry_RecyclerAdapter);
