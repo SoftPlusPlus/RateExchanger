@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.softplus.rateexchanger.models.Country;
+import com.softplus.rateexchanger.utilities.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,9 +49,14 @@ public class FetchRatesData {
 
                 Log.i(LOG_TAG, "==> " + currencySymbol + " " + rate);
 
-                //Rate currencyRate = new Rate(R.mipmap.ic_launcher_round, currencySymbol, currencySymbol, "Country Name", latestDate, rate);
-                Country currencyRate = new Country(currencySymbol, latestDate, rate);
-                countryList.add(currencyRate);
+                Country c = Constants.CountryList.get(currencySymbol);
+                if (c != null) {
+                    Constants.CountryList.get(currencySymbol).setRate(rate);
+                    countryList.add(c);
+                }
+                else {
+                    Log.i(LOG_TAG, "not find: " + currencySymbol);
+                }
             }
 
         } catch (JSONException e) {

@@ -3,13 +3,6 @@ package com.softplus.rateexchanger.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.softplus.rateexchanger.R;
-import com.softplus.rateexchanger.utilities.Constants;
-
-import static com.softplus.rateexchanger.utilities.Constants.Country_map;
-import static com.softplus.rateexchanger.utilities.Constants.Currency_map;
-import static com.softplus.rateexchanger.utilities.Constants.ImageID_map;
-
 public class Country implements Parcelable {
     private final String LOG_TAG = this.getClass().getName();
     private int imageId;
@@ -19,22 +12,29 @@ public class Country implements Parcelable {
     private String latestDate;
     private String rate;
 
-    public Country(String _symbol, String _latestDate, String _rate) {
+//    public Country(String _symbol, String _latestDate, String _rate) {
+//        this.symbol = _symbol;
+//        this.imageId = (ImageID_map.containsKey(_symbol))? ImageID_map.get(_symbol): R.drawable.image_empty;
+//        this.currency = (Currency_map.containsKey(_symbol))? Constants.Currency_map.get(_symbol): "";
+//        this.country = (Country_map.containsKey(_symbol))? Constants.Country_map.get(_symbol): "";
+//        this.latestDate = _latestDate;
+//        this.rate = _rate;
+//    }
+
+    public Country(String _symbol, int _imageId, String _country, String _currency, String _rate) {
         this.symbol = _symbol;
-        this.imageId = (ImageID_map.containsKey(_symbol))? ImageID_map.get(_symbol): R.drawable.image_empty;
-        this.currency = (Currency_map.containsKey(_symbol))? Constants.Currency_map.get(_symbol): "";
-        this.country = (Country_map.containsKey(_symbol))? Constants.Country_map.get(_symbol): "";
-        this.latestDate = _latestDate;
+        this.imageId = _imageId;
+        this.currency = _currency;
+        this.country = _country;
         this.rate = _rate;
     }
 
     protected Country(Parcel in) {
         this.symbol = in.readString();
-        this.latestDate = in.readString();
+        this.imageId = in.readInt();
+        this.country = in.readString();
+        this.currency = in.readString();
         this.rate = in.readString();
-        this.imageId = ImageID_map.get(this.symbol);
-        this.currency = Constants.Currency_map.get(this.symbol);
-        this.country = Constants.Country_map.get(this.symbol);
     }
 
     public int getImageId() {
@@ -97,7 +97,9 @@ public class Country implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(symbol);
-        parcel.writeString(latestDate);
+        parcel.writeInt(imageId);
+        parcel.writeString(country);
+        parcel.writeString(currency);
         parcel.writeString(rate);
     }
 }

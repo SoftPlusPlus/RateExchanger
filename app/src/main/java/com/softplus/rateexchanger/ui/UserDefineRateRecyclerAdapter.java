@@ -2,7 +2,6 @@ package com.softplus.rateexchanger.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,27 +16,34 @@ import android.widget.TextView;
 import com.softplus.rateexchanger.R;
 import com.softplus.rateexchanger.models.Country;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.softplus.rateexchanger.utilities.Constants.CountryList;
 import static com.softplus.rateexchanger.utilities.Constants.DEFAULT_VIEW_ITEMS;
-import static com.softplus.rateexchanger.utilities.Constants.ITEM_FOCUS_BACKGROUND_COLOR;
-import static com.softplus.rateexchanger.utilities.Constants.ITEM_UNFOCUS_BACKGROUND_COLOR;
 
 public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefineRateRecyclerAdapter.CountryHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private int selectedRow = 0;
     private Context context;
-    private List<Country> countryList;
+    private HashMap<String, String> rateList;
+    private List<Country> userDefineCountryList;
+    private HashMap<String, String> translate;
 
-    public UserDefineRateRecyclerAdapter(Context context) {
+    public UserDefineRateRecyclerAdapter(Context context, List<Country> rateList) {
         this.context = context;
-        this.countryList = new ArrayList<>();
+        //this.rateList = new ArrayList<>(rateList);
+        this.userDefineCountryList = new ArrayList<>();
+        this.translate = new HashMap<>();
         readUserDefineCountryList();
+
+        Log.i(LOG_TAG, "on user define adapter create ==> " + CountryList.get("TWD").getRate());
     }
 
     private void readUserDefineCountryList() {
@@ -53,8 +59,10 @@ public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefi
         // save settings to list
         String list[] = customerItems.split(",");
         for (int i = 0; i < list.length; i++) {
-            Country r = new Country(list[i], "", "");
-            this.countryList.add(r);
+            //Country r = new Country(list[i], "", "");
+            Country r = CountryList.get(list[i]);
+            this.userDefineCountryList.add(r);
+            translate.put(list[i], "");
         }
 
         // update UI
@@ -64,8 +72,8 @@ public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefi
     public void addCountry(String country) {
         // find if country exist?
         boolean find = false;
-        for (int i = 0; i < countryList.size(); i++) {
-            if (countryList.get(i).getSymbol().equals(country)) {
+        for (int i = 0; i < userDefineCountryList.size(); i++) {
+            if (userDefineCountryList.get(i).getSymbol().equals(country)) {
                 find = true;
                 break;
             }
@@ -73,7 +81,8 @@ public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefi
 
         // add country to lsit
         if (!find) {
-            countryList.add(new Country(country, "", ""));
+            Country r = CountryList.get(country);
+            userDefineCountryList.add(r);
             notifyDataSetChanged();
             // TODO: save to SharedPreference
         }
@@ -89,12 +98,12 @@ public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefi
 
     @Override
     public void onBindViewHolder(@NonNull final CountryHolder holder, final int position) {
-        Country rates = countryList.get(position);
+        Country rates = userDefineCountryList.get(position);
 
         holder.iv_symbol.setImageResource(rates.getImageId());
         holder.tv_symbol.setText(rates.getSymbol());
         holder.tv_currency.setText(rates.getCountry());
-        holder.et_value.setText(rates.getRate());
+        holder.et_value.setText(translate.get(rates.getSymbol()));
 
         holder.ll_view_group.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +119,7 @@ public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefi
         holder.ll_view_group.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                countryList.remove(holder.getLayoutPosition());
+                userDefineCountryList.remove(holder.getLayoutPosition());
                 notifyDataSetChanged();
                 return false;
             }
@@ -127,40 +136,50 @@ public class UserDefineRateRecyclerAdapter extends RecyclerView.Adapter<UserDefi
             public void afterTextChanged(Editable editable) {
                 int _position = holder.getLayoutPosition();
                 if (holder.et_value.hasFocus()) {
-                    countryList.get(_position).setRate(editable.toString());
-                    updateValues(_position);
+                    //userDefineCountryList.get(_position).setRate(editable.toString());
+                    updateValues(_position, editable.toString());
                     holder.et_value.setSelection(holder.et_value.getText().length());
                 }
             }
         });
 
+        /*
         if (selectedRow == position)
             holder.ll_view_group.setBackgroundColor(Color.parseColor(ITEM_FOCUS_BACKGROUND_COLOR));
         else
             holder.ll_view_group.setBackgroundColor(Color.parseColor(ITEM_UNFOCUS_BACKGROUND_COLOR));
+
+         */
     }
 
     @Override
     public int getItemCount() {
-        return countryList.size();
+        return userDefineCountryList.size();
     }
 
-    private void updateValues(int currentPosition) {
-        String inputString = countryList.get(currentPosition).getRate();
+    private void updateValues(int currentPosition, String inputString) {
+
         if (inputString.isEmpty())
             return;
 
         // TODO: processing big integer
-        int t = Integer.parseInt(inputString);
+        BigInteger 
+        float inputValue = Float.parseFloat(inputString);
+        String inputCountry = userDefineCountryList.get(currentPosition).getSymbol();
+        float inputCountryRate = Float.parseFloat( CountryList.get(inputCountry).getRate());
+        float USD_BASE = inputValue / inputCountryRate;
 
-        for (int i = 0; i < countryList.size(); i++) {
+        for (int i = 0; i < userDefineCountryList.size(); i++) {
             if (i == currentPosition)
                 continue;;
 
-            int value = t * (i + 1);
-            countryList.get(i).setRate(Integer.toString(value));
+            float currentCountryRate = Float.parseFloat(userDefineCountryList.get(i).getRate());
+            float value = USD_BASE * currentCountryRate;
+
+            String symbol = userDefineCountryList.get(i).getSymbol();
+            translate.put(symbol, Float.toString(value));
             notifyItemChanged(i);
-            Log.i(LOG_TAG, Integer.toString(value));
+            Log.i(LOG_TAG, "current: " + symbol + " USD_BASE: " + Float.toString(value) + " output: " + Float.toString(value));
         }
     }
 

@@ -18,7 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.softplus.rateexchanger.utilities.Constants.Country_map;
+import static com.softplus.rateexchanger.utilities.Constants.CountryList;
 
 public class AllCountryList extends AppCompatActivity {
 
@@ -72,12 +72,12 @@ public class AllCountryList extends AppCompatActivity {
 
         // sort country by hash map key
         List<Country> allCountry = new ArrayList<>();
-        Set set = Country_map.keySet();
+        Set set = CountryList.keySet();
         Object[] arr = set.toArray();
         Arrays.sort(arr);
         for (Object key : arr) {
-            Country r = new Country((String)key, "", "");
-            allCountry.add(r);
+            Country c = CountryList.get(key);
+            allCountry.add(c);
         }
 
         allCountryRecyclerAdapter = new AllCountryRecyclerAdapter(this, allCountry);

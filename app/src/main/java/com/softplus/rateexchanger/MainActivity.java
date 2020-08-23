@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(userDefineRecyclerView.getContext(), LinearLayoutManager.VERTICAL);
         userDefineRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        userDefineCountry_RecyclerAdapter = new UserDefineRateRecyclerAdapter(this);
+        userDefineCountry_RecyclerAdapter = new UserDefineRateRecyclerAdapter(this, countryList);
         userDefineRecyclerView.setAdapter(userDefineCountry_RecyclerAdapter);
     }
 
@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (countries != null && !countries.isEmpty()) {
             countryList = countries;
             //String latestUpdate = rateList.get(0).getLatestDate();
+            userDefineCountry_RecyclerAdapter.notifyDataSetChanged();
         }
     }
 
